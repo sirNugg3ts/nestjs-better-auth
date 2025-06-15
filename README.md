@@ -8,16 +8,16 @@ Install the library in your NestJS project:
 
 ```bash
 # Using npm
-npm install better-auth nestjs-better-auth
+npm install @thallesp/better-auth-nestjs
 
 # Using yarn
-yarn add better-auth nestjs-better-auth
+yarn add @thallesp/better-auth-nestjs
 
 # Using pnpm
-pnpm add better-auth nestjs-better-auth
+pnpm add @thallesp/better-auth-nestjs
 
 # Using bun
-bun add better-auth nestjs-better-auth
+bun add @thallesp/better-auth-nestjs
 ```
 
 ## Prerequisites
@@ -38,6 +38,7 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    // Don't worry, the library will automatically re-add the default body parsers.
     bodyParser: false,
   });
   await app.listen(process.env.PORT ?? 3333);
@@ -45,9 +46,8 @@ async function bootstrap() {
 bootstrap();
 ```
 
-Don't worry, better-auth will automatically re-add the default body parsers.
-
-> **Warning**: Currently, Better Auth's NestJS integration **only supports Express** and does not work with Fastify.
+> [!WARNING]  
+> Currently, Better Auth's NestJS integration **only supports Express** and does not work with Fastify.
 
 **2. Import AuthModule**
 
@@ -112,7 +112,8 @@ import { auth } from "./auth";
 export class AppModule {}
 ```
 
-> **Info**: Choose either the controller/route level approach or the global approach based on your needs. You don't need to implement both.
+> [!NOTE]  
+> Choose either the controller/route level approach or the global approach based on your needs. You don't need to implement both.
 
 ## Decorators
 
