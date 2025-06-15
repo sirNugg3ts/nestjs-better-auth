@@ -112,7 +112,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 
 		// Ensure basePath starts with /
 		if (!basePath.startsWith("/")) {
-			basePath = "/" + basePath;
+			basePath = `/${basePath}`;
 		}
 
 		// Ensure basePath doesn't end with /
@@ -133,7 +133,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 		this.logger.log(`AuthModule initialized BetterAuth on '${basePath}/*'`);
 	}
 
-	private setupHooks(providerMethod: Function) {
+	private setupHooks(providerMethod: (...args: unknown[]) => unknown) {
 		if (!this.auth.options.hooks) return;
 
 		for (const { metadataKey, hookType } of HOOKS) {
@@ -158,7 +158,11 @@ export class AuthModule implements NestModule, OnModuleInit {
 	 * @param auth - The Auth instance to use
 	 * @param options - Configuration options for the module
 	 */
-	static forRoot(auth: any, options: AuthModuleOptions = {}): {
+	static forRoot(
+		// biome-ignore lint/suspicious/noExplicitAny: i still need to find a type for the auth instance
+		auth: any,
+		options: AuthModuleOptions = {},
+	): {
 		global: boolean;
 		module: typeof AuthModule;
 		providers: Provider[];
