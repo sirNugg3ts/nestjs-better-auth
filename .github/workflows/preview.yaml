@@ -12,12 +12,11 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.2.16
-          cache: "bun"
 
       - name: Install dependencies
         run: bun install
 
       - name: Build
-        run: bun build
+        run: bun run build
 
-      - run: pnpm dlx pkg-pr-new publish
+      - run: bunx pkg-pr-new publish
