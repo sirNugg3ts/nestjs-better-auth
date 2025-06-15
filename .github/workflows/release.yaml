@@ -1,11 +1,11 @@
-name: Publish NPM Package
+name: Release NPM Package
 
 on:
   release:
     types: [published]
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,5 +25,7 @@ jobs:
       - name: Check for formatting errors
         run: bun run format
 
-      - name: Publish to NPM
-        run: bunx pkg-pr-new publish
+      - name: Release to NPM
+        run: bun publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
