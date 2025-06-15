@@ -5,5 +5,7 @@
     "experimentalDecorators": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    "declaration": true,
+    "isolatedDeclarations": true
   }
 }

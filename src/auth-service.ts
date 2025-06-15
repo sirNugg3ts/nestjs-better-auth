@@ -15,7 +15,7 @@ export class AuthService<T extends { api: T["api"] } = Auth> {
 	/**
 	 * Returns the API endpoints provided by the auth instance
 	 */
-	get api() {
+	get api(): T["api"] {
 		return this.auth.api;
 	}
 

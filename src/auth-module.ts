@@ -62,7 +62,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 		private readonly options: AuthModuleOptions,
 	) {}
 
-	onModuleInit() {
+	onModuleInit(): void {
 		// Setup hooks
 		if (!this.auth.options.hooks) return;
 
@@ -83,7 +83,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 		}
 	}
 
-	configure(consumer: MiddlewareConsumer) {
+	configure(consumer: MiddlewareConsumer): void {
 		const trustedOrigins = this.auth.options.trustedOrigins;
 		// function-based trustedOrigins requires a Request (from web-apis) object to evaluate, which is not available in NestJS (we only have a express Request object)
 		// if we ever need this, take a look at better-call which show an implementation for this
@@ -158,7 +158,12 @@ export class AuthModule implements NestModule, OnModuleInit {
 	 * @param auth - The Auth instance to use
 	 * @param options - Configuration options for the module
 	 */
-	static forRoot(auth: any, options: AuthModuleOptions = {}) {
+	static forRoot(auth: any, options: AuthModuleOptions = {}): {
+		global: boolean;
+		module: typeof AuthModule;
+		providers: Provider[];
+		exports: (Provider | typeof AuthService)[];
+	} {
 		// Initialize hooks with an empty object if undefined
 		// Without this initialization, the setupHook method won't be able to properly override hooks
 		// It won't throw an error, but any hook functions we try to add won't be called
@@ -188,7 +193,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 		return {
 			global: true,
 			module: AuthModule,
-			providers,
+			providers: providers,
 			exports: [
 				{
 					provide: AUTH_INSTANCE_KEY,

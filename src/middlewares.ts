@@ -4,7 +4,7 @@ import * as express from "express";
 
 @Injectable()
 export class SkipBodyParsingMiddleware implements NestMiddleware {
-	use(req: Request, res: Response, next: NextFunction) {
+	use(req: Request, res: Response, next: NextFunction): void {
 		// skip body parsing for better-auth routes
 		if (req.baseUrl.startsWith("/api/auth")) {
 			next();
