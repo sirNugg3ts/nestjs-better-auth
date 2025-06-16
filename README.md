@@ -8,16 +8,16 @@ Install the library in your NestJS project:
 
 ```bash
 # Using npm
-npm install @thallesp/better-auth-nestjs
+npm install @thallesp/nestjs-better-auth
 
 # Using yarn
-yarn add @thallesp/better-auth-nestjs
+yarn add @thallesp/nestjs-better-auth
 
 # Using pnpm
-pnpm add @thallesp/better-auth-nestjs
+pnpm add @thallesp/nestjs-better-auth
 
 # Using bun
-bun add @thallesp/better-auth-nestjs
+bun add @thallesp/nestjs-better-auth
 ```
 
 ## Prerequisites
