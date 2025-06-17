@@ -1,19 +1,19 @@
 import { createParamDecorator, SetMetadata } from "@nestjs/common";
-import type { ExecutionContext } from "@nestjs/common";
+import type { CustomDecorator, ExecutionContext } from "@nestjs/common";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
 
 /**
- * Marks a route as public, allowing unauthenticated access.
- * When applied to a controller method, the AuthGuard will skip authentication checks.
+ * Marks a route or a controller as public, allowing unauthenticated access.
+ * When applied, the AuthGuard will skip authentication checks.
  */
-export const Public = (): MethodDecorator => SetMetadata("PUBLIC", true);
+export const Public = (): CustomDecorator<string> => SetMetadata("PUBLIC", true);
 
 /**
- * Marks a route as having optional authentication.
- * When applied to a controller method, the AuthGuard will allow the request to proceed
+ * Marks a route or a controller as having optional authentication.
+ * When applied, the AuthGuard will allow the request to proceed
  * even if no session is present.
  */
-export const Optional = (): MethodDecorator => SetMetadata("OPTIONAL", true);
+export const Optional = (): CustomDecorator<string> => SetMetadata("OPTIONAL", true);
 
 /**
  * Parameter decorator that extracts the user session from the request.
