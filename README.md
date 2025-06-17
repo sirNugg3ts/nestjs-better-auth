@@ -160,6 +160,20 @@ export class UserController {
 }
 ```
 
+Alternatively, use it as a class decorator to specify access for an entire controller:
+```ts title="app.controller.ts"
+import { Controller, Get } from '@nestjs/common';
+import { Public, Optional } from '@thallesp/nestjs-better-auth';
+
+@Public() // All routes inside this controller are public
+@Controller('public')
+export class PublicController { /* */ }
+
+@Optional() // Authentication is optional for all routes inside this controller
+@Controller('optional')
+export class OptionalController { /* */ }
+```
+
 ### Hook Decorators
 
 Create custom hooks that integrate with NestJS's dependency injection:
