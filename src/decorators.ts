@@ -1,4 +1,4 @@
-import { createParamDecorator, SetMetadata } from "@nestjs/common";
+import { SetMetadata, createParamDecorator } from "@nestjs/common";
 import type { CustomDecorator, ExecutionContext } from "@nestjs/common";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
 
