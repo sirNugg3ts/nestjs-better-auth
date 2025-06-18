@@ -13,19 +13,19 @@ import {
 	MetadataScanner,
 } from "@nestjs/core";
 import type { Auth } from "better-auth";
-import { createAuthMiddleware } from "better-auth/plugins";
 import { toNodeHandler } from "better-auth/node";
+import { createAuthMiddleware } from "better-auth/plugins";
+import type { Request, Response } from "express";
+import { APIErrorExceptionFilter } from "./api-error-exception-filter.ts";
 import { AuthService } from "./auth-service.ts";
+import { SkipBodyParsingMiddleware } from "./middlewares.ts";
 import {
-	BEFORE_HOOK_KEY,
 	AFTER_HOOK_KEY,
-	HOOK_KEY,
 	AUTH_INSTANCE_KEY,
 	AUTH_MODULE_OPTIONS_KEY,
+	BEFORE_HOOK_KEY,
+	HOOK_KEY,
 } from "./symbols.ts";
-import { APIErrorExceptionFilter } from "./api-error-exception-filter.ts";
-import { SkipBodyParsingMiddleware } from "./middlewares.ts";
-import type { Request, Response } from "express";
 
 /**
  * Configuration options for the AuthModule
