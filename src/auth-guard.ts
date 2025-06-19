@@ -43,9 +43,9 @@ export class AuthGuard implements CanActivate {
 		request.user = session?.user ?? null; // useful for observability tools like Sentry
 
 		const isPublic = this.reflector.getAllAndOverride<boolean>("PUBLIC", [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+			context.getHandler(),
+			context.getClass(),
+		]);
 
 		if (isPublic) return true;
 
