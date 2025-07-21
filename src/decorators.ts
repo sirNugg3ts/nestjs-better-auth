@@ -21,12 +21,11 @@ export const Optional = (): CustomDecorator<string> =>
  * Parameter decorator that extracts the user session from the request.
  * Provides easy access to the authenticated user's session data in controller methods.
  */
-export const Session: ParameterDecorator = createParamDecorator(
-	(_data: unknown, context: ExecutionContext): unknown => {
+export const Session: ReturnType<typeof createParamDecorator> =
+	createParamDecorator((_data: unknown, context: ExecutionContext): unknown => {
 		const request = context.switchToHttp().getRequest();
 		return request.session;
-	},
-);
+	});
 
 /**
  * Registers a method to be executed before a specific auth route is processed.
