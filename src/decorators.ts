@@ -31,14 +31,14 @@ export const Session: ReturnType<typeof createParamDecorator> =
  * Registers a method to be executed before a specific auth route is processed.
  * @param path - The auth route path that triggers this hook (must start with '/')
  */
-export const BeforeHook = (path: `/${string}`): ClassDecorator =>
+export const BeforeHook = (path: `/${string}`): CustomDecorator<Symbol> =>
 	SetMetadata(BEFORE_HOOK_KEY, path);
 
 /**
  * Registers a method to be executed after a specific auth route is processed.
  * @param path - The auth route path that triggers this hook (must start with '/')
  */
-export const AfterHook = (path: `/${string}`): ClassDecorator =>
+export const AfterHook = (path: `/${string}`): CustomDecorator<Symbol> =>
 	SetMetadata(AFTER_HOOK_KEY, path);
 
 /**
