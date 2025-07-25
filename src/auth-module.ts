@@ -78,7 +78,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 
 			for (const method of methods) {
 				const providerMethod = providerPrototype[method];
-				this.setupHooks(providerMethod, provider);
+				this.setupHooks(providerMethod, provider.instance);
 			}
 		}
 	}
