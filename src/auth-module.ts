@@ -147,7 +147,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 				}
 
 				if (hookPath === ctx.path) {
-					await providerMethod(ctx);
+					await providerMethod.apply(providerMethod, [ctx]);
 				}
 			});
 		}
