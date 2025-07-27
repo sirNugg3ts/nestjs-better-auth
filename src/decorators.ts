@@ -1,5 +1,6 @@
 import { SetMetadata, createParamDecorator } from "@nestjs/common";
 import type { CustomDecorator, ExecutionContext } from "@nestjs/common";
+import type { createAuthMiddleware } from "better-auth/api";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
 
 /**
@@ -26,6 +27,14 @@ export const Session: ReturnType<typeof createParamDecorator> =
 		const request = context.switchToHttp().getRequest();
 		return request.session;
 	});
+
+/**
+ * Represents the context object passed to hooks.
+ * This type is derived from the parameters of the createAuthMiddleware function.
+ */
+export type AuthHookContext = Parameters<
+	Parameters<typeof createAuthMiddleware>[0]
+>[0];
 
 /**
  * Registers a method to be executed before a specific auth route is processed.
