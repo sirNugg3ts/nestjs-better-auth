@@ -135,7 +135,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 
 	private setupHooks(
 		providerMethod: (...args: unknown[]) => unknown,
-		providerClass: any,
+		providerClass: { new (...args: unknown[]): unknown },
 	) {
 		if (!this.auth.options.hooks) return;
 
