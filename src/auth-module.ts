@@ -1,5 +1,6 @@
 import { Inject, Logger, Module } from "@nestjs/common";
 import type {
+	DynamicModule,
 	MiddlewareConsumer,
 	NestModule,
 	OnModuleInit,
@@ -49,13 +50,13 @@ const HOOKS = [
 	imports: [DiscoveryModule],
 })
 export class AuthModule implements NestModule, OnModuleInit {
-	private logger = new Logger(AuthModule.name);
+	private readonly logger = new Logger(AuthModule.name);
 	constructor(
 		@Inject(AUTH_INSTANCE_KEY) private readonly auth: Auth,
 		@Inject(DiscoveryService)
-		private discoveryService: DiscoveryService,
+		private readonly discoveryService: DiscoveryService,
 		@Inject(MetadataScanner)
-		private metadataScanner: MetadataScanner,
+		private readonly metadataScanner: MetadataScanner,
 		@Inject(HttpAdapterHost)
 		private readonly adapter: HttpAdapterHost,
 		@Inject(AUTH_MODULE_OPTIONS_KEY)
@@ -165,12 +166,7 @@ export class AuthModule implements NestModule, OnModuleInit {
 		// biome-ignore lint/suspicious/noExplicitAny: i still need to find a type for the auth instance
 		auth: any,
 		options: AuthModuleOptions = {},
-	): {
-		global: boolean;
-		module: typeof AuthModule;
-		providers: Provider[];
-		exports: (Provider | typeof AuthService)[];
-	} {
+	): DynamicModule {
 		// Initialize hooks with an empty object if undefined
 		// Without this initialization, the setupHook method won't be able to properly override hooks
 		// It won't throw an error, but any hook functions we try to add won't be called
