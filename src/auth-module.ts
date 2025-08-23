@@ -11,7 +11,6 @@ import {
 	HttpAdapterHost,
 	MetadataScanner,
 } from "@nestjs/core";
-import type { Auth } from "better-auth";
 import { toNodeHandler } from "better-auth/node";
 import { createAuthMiddleware } from "better-auth/plugins";
 import type { Request, Response } from "express";
@@ -35,6 +34,9 @@ const HOOKS = [
 	{ metadataKey: BEFORE_HOOK_KEY, hookType: "before" as const },
 	{ metadataKey: AFTER_HOOK_KEY, hookType: "after" as const },
 ];
+
+// biome-ignore lint/suspicious/noExplicitAny: external auth instance can vary with plugins
+type Auth = any;
 
 /**
  * NestJS module that integrates the Auth library with NestJS applications.
@@ -158,19 +160,15 @@ export class AuthModule
 		}
 	}
 
-	// Backward-compatible forRoot(auth, options) that forwards to builder's forRoot
-	static forRoot(
-		// biome-ignore lint/suspicious/noExplicitAny: external auth instance can vary with plugins
-		auth: any,
-		options: typeof OPTIONS_TYPE = {} as typeof OPTIONS_TYPE,
-	): DynamicModule {
-		return ConfigurableModuleClass.forRoot({
-			...(options as Record<string, unknown>),
-			auth,
-		}) as DynamicModule;
+	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
+		return {
+			...AuthModule.forRootAsync(options),
+		};
 	}
 
-	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
-		return ConfigurableModuleClass.forRootAsync(options) as DynamicModule;
+	static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
+		return {
+			...AuthModule.forRoot(options),
+		};
 	}
 }
