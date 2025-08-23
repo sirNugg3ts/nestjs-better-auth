@@ -162,13 +162,13 @@ export class AuthModule
 
 	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
 		return {
-			...AuthModule.forRootAsync(options),
+			...super.forRootAsync(options),
 		};
 	}
 
 	static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
 		return {
-			...AuthModule.forRoot(options),
+			...super.forRoot(options),
 		};
 	}
 }
