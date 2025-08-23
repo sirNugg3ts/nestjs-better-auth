@@ -6,17 +6,20 @@
 	"license": "MIT",
 	"repository": "https://github.com/thallesp/nestjs-better-auth",
 	"keywords": ["nestjs", "better-auth", "auth", "nestjs-better-auth"],
+	"type": "module",
 	"scripts": {
-		"build": "bunup src/index.ts --format esm,cjs --dts",
+		"build": "unbuild",
+		"prepack": "unbuild",
 		"lint": "biome lint",
 		"format": "biome format",
 		"check": "biome check"
 	},
 	"types": "dist/index.d.ts",
+	"main": "./dist/index.cjs",
 	"exports": {
 		".": {
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
+			"require": "./dist/index.cjs"
 		}
 	},
 	"files": ["dist"],
@@ -25,7 +28,7 @@
 		"@tsconfig/node22": "^22.0.2",
 		"@types/bun": "latest",
 		"@types/express": "^5.0.0",
-		"bunup": "^0.8.37"
+		"unbuild": "^3.6.1"
 	},
 	"peerDependencies": {
 		"typescript": "^5",
