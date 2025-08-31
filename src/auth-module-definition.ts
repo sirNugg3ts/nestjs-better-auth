@@ -2,9 +2,6 @@ import { ConfigurableModuleBuilder } from "@nestjs/common";
 
 export type AuthModuleOptions = {
 	auth: any;
-	disableExceptionFilter?: boolean;
-	disableTrustedOriginsCors?: boolean;
-	disableBodyParser?: boolean;
 };
 
 export const {
@@ -14,4 +11,18 @@ export const {
 	ASYNC_OPTIONS_TYPE,
 } = new ConfigurableModuleBuilder<AuthModuleOptions>()
 	.setClassMethodName("forRoot")
+	.setExtras(
+		{
+			isGlobal: true,
+			disableExceptionFilter: false,
+			disableTrustedOriginsCors: false,
+			disableBodyParser: false,
+		},
+		(def, extras) => {
+			return {
+				...def,
+				global: extras.isGlobal,
+			};
+		},
+	)
 	.build();
