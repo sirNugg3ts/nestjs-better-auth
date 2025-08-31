@@ -47,6 +47,9 @@ async function bootstrap() {
 bootstrap();
 ```
 
+> [!WARNING]  
+> Currently the library has beta support for Fastify, if you experience any issues with it, please open an issue.
+
 **2. Import AuthModule**
 
 Import the `AuthModule` in your root module:
