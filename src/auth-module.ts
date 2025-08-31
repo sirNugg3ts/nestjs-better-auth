@@ -12,6 +12,7 @@ import {
 	MetadataScanner,
 } from "@nestjs/core";
 import { toNodeHandler } from "better-auth/node";
+import type { BetterAuthOptions} from "better-auth"
 import { createAuthMiddleware } from "better-auth/plugins";
 import type { Request, Response } from "express";
 import {
@@ -25,7 +26,6 @@ import { AuthService } from "./auth-service.ts";
 import { SkipBodyParsingMiddleware } from "./middlewares.ts";
 import {
 	AFTER_HOOK_KEY,
-	AUTH_INSTANCE_KEY,
 	BEFORE_HOOK_KEY,
 	HOOK_KEY,
 } from "./symbols.ts";
@@ -35,8 +35,11 @@ const HOOKS = [
 	{ metadataKey: AFTER_HOOK_KEY, hookType: "after" as const },
 ];
 
-// biome-ignore lint/suspicious/noExplicitAny: external auth instance can vary with plugins
-type Auth = any;
+//  external auth instance can vary with plugins
+export type Auth = {
+  api: any
+  options: BetterAuthOptions
+};
 
 /**
  * NestJS module that integrates the Auth library with NestJS applications.
@@ -89,7 +92,7 @@ export class AuthModule
 	}
 
 	configure(consumer: MiddlewareConsumer): void {
-		const trustedOrigins = this.auth.options.trustedOrigins;
+		const trustedOrigins = this.options.auth.options.trustedOrigins;
 		// function-based trustedOrigins requires a Request (from web-apis) object to evaluate, which is not available in NestJS (we only have a express Request object)
 		// if we ever need this, take a look at better-call which show an implementation for this
 		const isNotFunctionBased = trustedOrigins && Array.isArray(trustedOrigins);
