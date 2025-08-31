@@ -31,12 +31,8 @@ const HOOKS = [
 	{ metadataKey: AFTER_HOOK_KEY, hookType: "after" as const },
 ];
 
-//  external auth instance can vary with plugins
-export type Auth = {
-	// biome-ignore lint/suspicious/noExplicitAny: i don't want to cause issues/breaking changes between different ways of setting up better-auth and even versions
-	api: any;
-	options: BetterAuthOptions;
-};
+// biome-ignore lint/suspicious/noExplicitAny: i don't want to cause issues/breaking changes between different ways of setting up better-auth and even versions
+export type Auth = any;
 
 /**
  * NestJS module that integrates the Auth library with NestJS applications.
@@ -69,7 +65,7 @@ export class AuthModule
 		if (!this.options.auth.options.hooks) return;
 
 		this.options.auth.options.hooks = {
-			...this.auth.options.hooks,
+			...this.options.auth.options.hooks,
 		};
 
 		const providers = this.discoveryService
@@ -114,7 +110,7 @@ export class AuthModule
 			consumer.apply(SkipBodyParsingMiddleware).forRoutes("*path");
 
 		// Get basePath from options or use default
-		let basePath = this.auth.options.basePath ?? "/api/auth";
+		let basePath = this.options.auth.options.basePath ?? "/api/auth";
 
 		// Ensure basePath starts with /
 		if (!basePath.startsWith("/")) {
@@ -126,7 +122,7 @@ export class AuthModule
 			basePath = basePath.slice(0, -1);
 		}
 
-		const handler = toNodeHandler(this.auth);
+		const handler = toNodeHandler(this.options.auth);
 		this.adapter.httpAdapter
 			.getInstance()
 			// little hack to ignore any global prefix
@@ -141,22 +137,24 @@ export class AuthModule
 		providerMethod: (...args: unknown[]) => unknown,
 		providerClass: { new (...args: unknown[]): unknown },
 	) {
-		if (!this.auth.options.hooks) return;
+		if (!this.options.auth.options.hooks) return;
 
 		for (const { metadataKey, hookType } of HOOKS) {
 			const hookPath = Reflect.getMetadata(metadataKey, providerMethod);
 			if (!hookPath) continue;
 
-			const originalHook = this.auth.options.hooks[hookType];
-			this.auth.options.hooks[hookType] = createAuthMiddleware(async (ctx) => {
-				if (originalHook) {
-					await originalHook(ctx);
-				}
+			const originalHook = this.options.auth.options.hooks[hookType];
+			this.options.auth.options.hooks[hookType] = createAuthMiddleware(
+				async (ctx) => {
+					if (originalHook) {
+						await originalHook(ctx);
+					}
 
-				if (hookPath === ctx.path) {
-					await providerMethod.apply(providerClass, [ctx]);
-				}
-			});
+					if (hookPath === ctx.path) {
+						await providerMethod.apply(providerClass, [ctx]);
+					}
+				},
+			);
 		}
 	}
 
