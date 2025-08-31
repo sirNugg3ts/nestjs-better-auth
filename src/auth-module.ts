@@ -65,9 +65,9 @@ export class AuthModule
 	}
 
 	onModuleInit(): void {
-		if (!this.auth.options.hooks) return;
+		if (!this.options.auth.options.hooks) return;
 
-		this.auth.options.hooks = {
+		this.options.auth.options.hooks = {
 			...this.auth.options.hooks,
 		};
 
