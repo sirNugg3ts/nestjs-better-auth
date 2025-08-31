@@ -6,6 +6,9 @@ A comprehensive NestJS integration library for [Better Auth](https://www.better-
 
 Install the library in your NestJS project:
 
+> [!WARNING]  
+> Install the latest `better-auth` package. If you hit 404s after updates, remove `node_modules` and your lockfile, then reinstall. Context: [#20](https://github.com/ThallesP/nestjs-better-auth/issues/20).
+
 ```bash
 # Using npm
 npm install @thallesp/nestjs-better-auth
