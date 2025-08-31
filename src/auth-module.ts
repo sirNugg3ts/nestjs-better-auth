@@ -12,7 +12,7 @@ import {
 	MetadataScanner,
 } from "@nestjs/core";
 import { toNodeHandler } from "better-auth/node";
-import type { BetterAuthOptions} from "better-auth"
+import type { BetterAuthOptions } from "better-auth";
 import { createAuthMiddleware } from "better-auth/plugins";
 import type { Request, Response } from "express";
 import {
@@ -24,11 +24,7 @@ import {
 } from "./auth-module-definition.ts";
 import { AuthService } from "./auth-service.ts";
 import { SkipBodyParsingMiddleware } from "./middlewares.ts";
-import {
-	AFTER_HOOK_KEY,
-	BEFORE_HOOK_KEY,
-	HOOK_KEY,
-} from "./symbols.ts";
+import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
 
 const HOOKS = [
 	{ metadataKey: BEFORE_HOOK_KEY, hookType: "before" as const },
@@ -37,8 +33,8 @@ const HOOKS = [
 
 //  external auth instance can vary with plugins
 export type Auth = {
-  api: any
-  options: BetterAuthOptions
+	api: any;
+	options: BetterAuthOptions;
 };
 
 /**
@@ -69,10 +65,11 @@ export class AuthModule
 	}
 
 	onModuleInit(): void {
-		// Ensure hooks object exists so we can extend/override it safely
+		if (!this.auth.options.hooks) return;
+
 		this.auth.options.hooks = {
 			...this.auth.options.hooks,
-		} as NonNullable<typeof this.auth.options.hooks>;
+		};
 
 		const providers = this.discoveryService
 			.getProviders()
