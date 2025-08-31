@@ -12,7 +12,6 @@ import {
 	MetadataScanner,
 } from "@nestjs/core";
 import { toNodeHandler } from "better-auth/node";
-import type { BetterAuthOptions } from "better-auth";
 import { createAuthMiddleware } from "better-auth/plugins";
 import type { Request, Response } from "express";
 import {
