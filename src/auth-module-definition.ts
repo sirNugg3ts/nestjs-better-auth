@@ -8,12 +8,13 @@ export type AuthModuleOptions<A = Auth> = {
 	disableBodyParser?: boolean;
 };
 
+export const MODULE_OPTIONS_TOKEN = Symbol("AUTH_MODULE_OPTIONS");
+
 export const {
 	ConfigurableModuleClass,
-	MODULE_OPTIONS_TOKEN,
 	OPTIONS_TYPE,
 	ASYNC_OPTIONS_TYPE,
-} = new ConfigurableModuleBuilder<AuthModuleOptions>()
+} = new ConfigurableModuleBuilder<AuthModuleOptions>({optionsInjectionToken: MODULE_OPTIONS_TOKEN})
 	.setClassMethodName("forRoot")
 	.setExtras(
 		{
@@ -24,11 +25,9 @@ export const {
 		},
 		(def, extras) => {
 			return {
-				...def,
-				providers: [
-					...def.providers ?? [],
-				],
-				global: extras.isGlobal,
+        ...def,
+        exports: [MODULE_OPTIONS_TOKEN],
+        global: extras.isGlobal,
 			};
 		},
 	)
