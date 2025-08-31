@@ -53,7 +53,6 @@ export class AuthModule
 {
 	private readonly logger = new Logger(AuthModule.name);
 	constructor(
-		@Inject(AUTH_INSTANCE_KEY) private readonly auth: Auth,
 		@Inject(DiscoveryService)
 		private readonly discoveryService: DiscoveryService,
 		@Inject(MetadataScanner)

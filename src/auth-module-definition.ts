@@ -1,7 +1,11 @@
 import { ConfigurableModuleBuilder } from "@nestjs/common";
+import { AUTH_INSTANCE_KEY } from "./symbols.ts";
 
-export type AuthModuleOptions = {
-	auth: any;
+export type AuthModuleOptions<A = any> = {
+	auth: A;
+	disableExceptionFilter?: boolean;
+	disableTrustedOriginsCors?: boolean;
+	disableBodyParser?: boolean;
 };
 
 export const {
@@ -21,6 +25,13 @@ export const {
 		(def, extras) => {
 			return {
 				...def,
+				providers: [
+					...def.providers,
+					{
+						provide: AUTH_INSTANCE_KEY,
+						useValue: {},
+					},
+				],
 				global: extras.isGlobal,
 			};
 		},
