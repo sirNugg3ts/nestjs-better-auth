@@ -4,7 +4,7 @@ import { Reflector } from "@nestjs/core";
 import { APIError, type getSession } from "better-auth/api";
 import { fromNodeHeaders } from "better-auth/node";
 import {
-	AuthModuleOptions,
+	type AuthModuleOptions,
 	MODULE_OPTIONS_TOKEN,
 } from "./auth-module-definition.ts";
 

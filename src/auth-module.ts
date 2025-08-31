@@ -33,6 +33,7 @@ const HOOKS = [
 
 //  external auth instance can vary with plugins
 export type Auth = {
+	// biome-ignore lint/suspicious/noExplicitAny: i don't want to cause issues/breaking changes between different ways of setting up better-auth and even versions
 	api: any;
 	options: BetterAuthOptions;
 };
@@ -161,13 +162,13 @@ export class AuthModule
 
 	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
 		return {
-			...super.forRootAsync(options),
+			...ConfigurableModuleClass.forRootAsync(options),
 		};
 	}
 
 	static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
 		return {
-			...super.forRoot(options),
+			...ConfigurableModuleClass.forRoot(options),
 		};
 	}
 }

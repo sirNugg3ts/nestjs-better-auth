@@ -1,7 +1,7 @@
 import { Inject } from "@nestjs/common";
 import type { Auth } from "better-auth";
 import {
-	AuthModuleOptions,
+	type AuthModuleOptions,
 	MODULE_OPTIONS_TOKEN,
 } from "./auth-module-definition.ts";
 
