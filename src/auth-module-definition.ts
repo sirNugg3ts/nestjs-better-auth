@@ -27,12 +27,10 @@ export const { ConfigurableModuleClass, OPTIONS_TYPE, ASYNC_OPTIONS_TYPE } =
 			(def, extras) => {
 				const providers = def.providers ?? [];
 
-				if (extras.disableExceptionFilter) {
-					providers.push({
-						provide: APP_FILTER,
-						useClass: APIErrorExceptionFilter,
-					});
-				}
+				providers.push({
+					provide: APP_FILTER,
+					useClass: APIErrorExceptionFilter,
+				});
 
 				return {
 					...def,
