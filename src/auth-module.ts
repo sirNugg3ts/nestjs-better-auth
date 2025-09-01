@@ -159,13 +159,29 @@ export class AuthModule
 
 	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
 		return {
-			...ConfigurableModuleClass.forRootAsync(options),
+			...super.forRootAsync(options),
 		};
 	}
 
-	static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
+	static forRoot(options: typeof OPTIONS_TYPE): DynamicModule;
+	/**
+	 * @deprecated Use the object-based signature: AuthModule.forRoot({ auth, ...options })
+	 */
+	static forRoot(
+		auth: Auth,
+		options?: Omit<typeof OPTIONS_TYPE, "auth">,
+	): DynamicModule;
+	static forRoot(
+		arg1: Auth | typeof OPTIONS_TYPE,
+		arg2?: Omit<typeof OPTIONS_TYPE, "auth">,
+	): DynamicModule {
+		const normalizedOptions: typeof OPTIONS_TYPE =
+			typeof arg1 === "object" && arg1 !== null && "auth" in (arg1 as object)
+				? (arg1 as typeof OPTIONS_TYPE)
+				: ({ ...(arg2 ?? {}), auth: arg1 as Auth } as typeof OPTIONS_TYPE);
+
 		return {
-			...ConfigurableModuleClass.forRoot(options),
+			...super.forRoot(normalizedOptions),
 		};
 	}
 }
