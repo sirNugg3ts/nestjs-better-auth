@@ -4,9 +4,10 @@ import type { ExceptionFilter } from "@nestjs/common";
 import { APIError } from "better-auth/api";
 import type { Response } from "express";
 
-@Catch(APIError)
+@Catch()
 export class APIErrorExceptionFilter implements ExceptionFilter {
 	catch(exception: APIError, host: ArgumentsHost): void {
+		console.log("im getting called");
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const status = exception.statusCode;
