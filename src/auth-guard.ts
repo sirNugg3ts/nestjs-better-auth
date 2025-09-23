@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
+import { type GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { Reflector } from "@nestjs/core";
 import type { Auth } from "better-auth";
 import { APIError, type getSession } from "better-auth/api";
@@ -30,11 +31,12 @@ export class AuthGuard implements CanActivate {
 	/**
 	 * Validates if the current request is authenticated
 	 * Attaches session and user information to the request object
+	 * Supports both HTTP and GraphQL execution contexts
 	 * @param context - The execution context of the current request
 	 * @returns True if the request is authorized to proceed, throws an error otherwise
 	 */
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = context.switchToHttp().getRequest();
+		const request = this.getRequestFromContext(context);
 		const session = await this.auth.api.getSession({
 			headers: fromNodeHeaders(request.headers || request?.handshake?.headers || []),
 		});
@@ -64,4 +66,18 @@ export class AuthGuard implements CanActivate {
 
 		return true;
 	}
+
+	/**
+	 * Extracts the request object from either HTTP or GraphQL execution context
+	 * @param context - The execution context
+	 * @returns The request object
+	 */
+	private getRequestFromContext(context: ExecutionContext) {
+		const contextType = context.getType<GqlContextType>();
+    if (contextType === 'graphql') {
+      return GqlExecutionContext.create(context).getContext().req;
+    }
+
+    return context.switchToHttp().getRequest();
+  }
 }
