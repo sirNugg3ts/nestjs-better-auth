@@ -24,7 +24,6 @@ import {
 import { AuthService } from "./auth-service.ts";
 import { SkipBodyParsingMiddleware } from "./middlewares.ts";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
-import { APIError } from "better-auth/api";
 
 const HOOKS = [
 	{ metadataKey: BEFORE_HOOK_KEY, hookType: "before" as const },
@@ -127,20 +126,8 @@ export class AuthModule
 			.getInstance()
 			// little hack to ignore any global prefix
 			// for now i'll just not support a global prefix
-			.use(`${basePath}/*path`, async (req: Request, res: Response) => {
-				return await handler(req, res).catch((err) => {
-					// for whatever reason, nestjs' built-in exception filters are not working so I'll go with this for now
-					if (this.options.disableExceptionFilter) throw err;
-
-					if (err instanceof APIError) {
-						return res.status(err.statusCode).json({
-							statusCode: err.statusCode,
-							message: err.message,
-						});
-					}
-
-					throw err;
-				});
+			.use(`${basePath}/*path`, (req: Request, res: Response) => {
+				return handler(req, res);
 			});
 		this.logger.log(`AuthModule initialized BetterAuth on '${basePath}/*'`);
 	}
