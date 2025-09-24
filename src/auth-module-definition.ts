@@ -1,7 +1,5 @@
 import { ConfigurableModuleBuilder } from "@nestjs/common";
 import type { Auth } from "./auth-module.ts";
-import { APP_FILTER } from "@nestjs/core";
-import { APIErrorExceptionFilter } from "./api-error-exception-filter.ts";
 import { APIErrorHookThrow } from "./api-error-hook-throw.ts";
 
 export type AuthModuleOptions<A = Auth> = {
@@ -21,21 +19,16 @@ export const { ConfigurableModuleClass, OPTIONS_TYPE, ASYNC_OPTIONS_TYPE } =
 		.setExtras(
 			{
 				isGlobal: true,
-				disableExceptionFilter: false,
+				enableAPIErrorThrow: false,
 				disableTrustedOriginsCors: false,
 				disableBodyParser: false,
 			},
 			(def, extras) => {
 				const providers = def.providers ?? [];
 
-				if (!extras.disableExceptionFilter) {
-					providers.push({
-						provide: APP_FILTER,
-						useClass: APIErrorExceptionFilter,
-					});
+				if (extras.enableAPIErrorThrow) {
+					providers.push(APIErrorHookThrow);
 				}
-
-				providers.push(APIErrorHookThrow);
 
 				return {
 					...def,
