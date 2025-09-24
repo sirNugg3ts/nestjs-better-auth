@@ -4,7 +4,7 @@ import { APIErrorHookThrow } from "./api-error-hook-throw.ts";
 
 export type AuthModuleOptions<A = Auth> = {
 	auth: A;
-	disableExceptionFilter?: boolean;
+	enableAPIErrorThrow?: boolean;
 	disableTrustedOriginsCors?: boolean;
 	disableBodyParser?: boolean;
 };
