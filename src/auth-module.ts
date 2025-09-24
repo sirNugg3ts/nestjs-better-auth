@@ -139,8 +139,10 @@ export class AuthModule
 		if (!this.options.auth.options.hooks) return;
 
 		for (const { metadataKey, hookType } of HOOKS) {
+			const hasHook = Reflect.hasMetadata(metadataKey, providerMethod);
+			if (!hasHook) continue;
+
 			const hookPath = Reflect.getMetadata(metadataKey, providerMethod);
-			if (!hookPath) continue;
 
 			const originalHook = this.options.auth.options.hooks[hookType];
 			this.options.auth.options.hooks[hookType] = createAuthMiddleware(
@@ -149,9 +151,9 @@ export class AuthModule
 						await originalHook(ctx);
 					}
 
-					if (hookPath === ctx.path) {
-						await providerMethod.apply(providerClass, [ctx]);
-					}
+					if (hookPath && hookPath !== ctx.path) return;
+
+					await providerMethod.apply(providerClass, [ctx]);
 				},
 			);
 		}

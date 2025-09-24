@@ -2,6 +2,7 @@ import { ConfigurableModuleBuilder } from "@nestjs/common";
 import type { Auth } from "./auth-module.ts";
 import { APP_FILTER } from "@nestjs/core";
 import { APIErrorExceptionFilter } from "./api-error-exception-filter.ts";
+import { APIErrorHookThrow } from "./api-error-hook-throw.ts";
 
 export type AuthModuleOptions<A = Auth> = {
 	auth: A;
@@ -33,6 +34,8 @@ export const { ConfigurableModuleClass, OPTIONS_TYPE, ASYNC_OPTIONS_TYPE } =
 						useClass: APIErrorExceptionFilter,
 					});
 				}
+
+				providers.push(APIErrorHookThrow);
 
 				return {
 					...def,
