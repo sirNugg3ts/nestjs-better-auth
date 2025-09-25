@@ -38,7 +38,9 @@ export class AuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const session = await this.options.auth.api.getSession({
-			headers: fromNodeHeaders(request.headers),
+			headers: fromNodeHeaders(
+				request.headers || request?.handshake?.headers || [],
+			),
 		});
 
 		request.session = session;
