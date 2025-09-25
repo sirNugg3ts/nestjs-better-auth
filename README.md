@@ -119,6 +119,30 @@ export class AppModule {}
 > [!NOTE]  
 > Choose either the controller/route level approach or the global approach based on your needs. You don't need to implement both.
 
+### GraphQL Support
+
+The `AuthGuard` works seamlessly with GraphQL resolvers using the same patterns:
+
+```ts title="user.resolver.ts"
+import { Resolver, Query, UseGuards } from '@nestjs/graphql';
+import { AuthGuard, Session, UserSession, Public } from '@thallesp/nestjs-better-auth';
+
+@Resolver()
+@UseGuards(AuthGuard) // Apply to all resolvers in this class
+export class UserResolver {
+  @Query(() => String)
+  @Public() // Mark this query as public
+  async publicQuery() {
+    return "This query is public";
+  }
+
+  @Query(() => String)
+  async protectedQuery(@Session() session: UserSession) {
+    return `Hello ${session.user.name}!`;
+  }
+}
+```
+
 ## Decorators
 
 Better Auth provides several decorators to enhance your authentication setup:
