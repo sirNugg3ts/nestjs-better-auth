@@ -2,7 +2,7 @@ import { SetMetadata, createParamDecorator } from "@nestjs/common";
 import type { CustomDecorator, ExecutionContext } from "@nestjs/common";
 import type { createAuthMiddleware } from "better-auth/api";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
-import { type GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
+import { getRequestFromContext } from "./utils.ts";
 
 /**
  * Marks a route or a controller as public, allowing unauthenticated access.
@@ -29,21 +29,6 @@ export const Session: ReturnType<typeof createParamDecorator> =
 		const request = getRequestFromContext(context);
 		return request.session;
 	});
-
-/**
- * Extracts the request object from either HTTP or GraphQL execution context
- * @param context - The execution context
- * @returns The request object
- */
-function getRequestFromContext(context: ExecutionContext) {
-	const contextType = context.getType<GqlContextType>();
-	if (contextType === "graphql") {
-		return GqlExecutionContext.create(context).getContext().req;
-	}
-
-	return context.switchToHttp().getRequest();
-}
-
 /**
  * Represents the context object passed to hooks.
  * This type is derived from the parameters of the createAuthMiddleware function.

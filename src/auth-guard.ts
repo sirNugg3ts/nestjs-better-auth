@@ -1,13 +1,13 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
-import { type GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { Reflector } from "@nestjs/core";
-import { APIError, type getSession } from "better-auth/api";
+import type { getSession } from "better-auth/api";
 import { fromNodeHeaders } from "better-auth/node";
 import {
 	type AuthModuleOptions,
 	MODULE_OPTIONS_TOKEN,
 } from "./auth-module-definition.ts";
+import { getRequestFromContext } from "./utils.ts";
 
 /**
  * Type representing a valid user session after authentication
@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate {
 	 * @returns True if the request is authorized to proceed, throws an error otherwise
 	 */
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = this.getRequestFromContext(context);
+		const request = getRequestFromContext(context);
 		const session = await this.options.auth.api.getSession({
 			headers: fromNodeHeaders(
 				request.headers || request?.handshake?.headers || [],
@@ -63,25 +63,11 @@ export class AuthGuard implements CanActivate {
 		if (isOptional && !session) return true;
 
 		if (!session)
-			throw new APIError(401, {
+			throw new UnauthorizedException({
 				code: "UNAUTHORIZED",
 				message: "Unauthorized",
 			});
 
 		return true;
-	}
-
-	/**
-	 * Extracts the request object from either HTTP or GraphQL execution context
-	 * @param context - The execution context
-	 * @returns The request object
-	 */
-	private getRequestFromContext(context: ExecutionContext) {
-		const contextType = context.getType<GqlContextType>();
-		if (contextType === "graphql") {
-			return GqlExecutionContext.create(context).getContext().req;
-		}
-
-		return context.switchToHttp().getRequest();
 	}
 }
