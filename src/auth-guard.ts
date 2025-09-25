@@ -2,10 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { type GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { Reflector } from "@nestjs/core";
-import type { Auth } from "better-auth";
 import { APIError, type getSession } from "better-auth/api";
 import { fromNodeHeaders } from "better-auth/node";
-import { AUTH_INSTANCE_KEY } from "./symbols.ts";
+import {
+	type AuthModuleOptions,
+	MODULE_OPTIONS_TOKEN,
+} from "./auth-module-definition.ts";
 
 /**
  * Type representing a valid user session after authentication
@@ -24,8 +26,8 @@ export class AuthGuard implements CanActivate {
 	constructor(
 		@Inject(Reflector)
 		private readonly reflector: Reflector,
-		@Inject(AUTH_INSTANCE_KEY)
-		private readonly auth: Auth,
+		@Inject(MODULE_OPTIONS_TOKEN)
+		private readonly options: AuthModuleOptions,
 	) {}
 
 	/**
@@ -37,8 +39,10 @@ export class AuthGuard implements CanActivate {
 	 */
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = this.getRequestFromContext(context);
-		const session = await this.auth.api.getSession({
-			headers: fromNodeHeaders(request.headers || request?.handshake?.headers || []),
+		const session = await this.options.auth.api.getSession({
+			headers: fromNodeHeaders(
+				request.headers || request?.handshake?.headers || [],
+			),
 		});
 
 		request.session = session;
@@ -74,10 +78,10 @@ export class AuthGuard implements CanActivate {
 	 */
 	private getRequestFromContext(context: ExecutionContext) {
 		const contextType = context.getType<GqlContextType>();
-    if (contextType === 'graphql') {
-      return GqlExecutionContext.create(context).getContext().req;
-    }
+		if (contextType === "graphql") {
+			return GqlExecutionContext.create(context).getContext().req;
+		}
 
-    return context.switchToHttp().getRequest();
-  }
+		return context.switchToHttp().getRequest();
+	}
 }
