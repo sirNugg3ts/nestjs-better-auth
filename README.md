@@ -309,43 +309,12 @@ The request object provides:
 - `req.session`: The full session object containing user data and authentication state
 - `req.user`: A direct reference to the user object from the session (useful for observability tools like Sentry)
 
-## Exception Filter
-
-Better Auth's NestJS integration includes a built-in exception filter for handling `APIError` instances. You can disable this filter and implement your own:
-
-```typescript
-AuthModule.forRoot(auth, { disableExceptionFilter: true })
-```
-
-Then you can create your own exception filter:
-
-```typescript
-@Catch(APIError)
-export class CustomAPIErrorFilter implements ExceptionFilter {
-  catch(exception: APIError, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    
-    // Your custom error handling logic
-    response.status(exception.statusCode).json({
-      statusCode: exception.statusCode,
-      message: exception.body?.message,
-      // Add custom fields as needed
-      timestamp: new Date().toISOString(),
-    });
-  }
-}
-```
-
-This allows you to customize error responses while still leveraging Better Auth's error system.
-
 ## Module Options
 
 When configuring `AuthModule.forRoot()`, you can provide options to customize the behavior:
 
 ```typescript
 AuthModule.forRoot(auth, {
-  disableExceptionFilter: false,
   disableTrustedOriginsCors: false,
   disableBodyParser: false
 })
@@ -355,6 +324,5 @@ The available options are:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `disableExceptionFilter` | `false` | When set to `true`, disables the built-in exception filter for handling `APIError` instances. Use this if you want to implement your own custom exception filter. |
 | `disableTrustedOriginsCors` | `false` | When set to `true`, disables the automatic CORS configuration for the origins specified in `trustedOrigins`. Use this if you want to handle CORS configuration manually. |
 | `disableBodyParser` | `false` | When set to `true`, disables the automatic body parser middleware. Use this if you want to handle request body parsing manually. |
