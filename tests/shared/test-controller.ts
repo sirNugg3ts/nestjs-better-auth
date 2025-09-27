@@ -1,5 +1,5 @@
 import { Controller, Get, Request } from "@nestjs/common";
-import { Public, Optional } from "../../src/decorators.ts";
+import { OptionalAuth, AllowAnonymous } from "../../src/decorators.ts";
 import type { UserSession } from "../../src/auth-guard.ts";
 
 // Simple controller with one protected route and one public route
@@ -10,13 +10,13 @@ export class TestController {
 		return { user: req.user };
 	}
 
-	@Public()
+	@AllowAnonymous()
 	@Get("public")
 	public() {
 		return { ok: true };
 	}
 
-	@Optional()
+	@OptionalAuth()
 	@Get("optional")
 	optional(@Request() req: UserSession) {
 		return { authenticated: !!req.user, session: req.session };

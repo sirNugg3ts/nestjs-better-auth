@@ -6,9 +6,8 @@ import { ApolloDriver, type ApolloDriverConfig } from "@nestjs/apollo";
 import type { Request, Response } from "express";
 import { ExpressAdapter } from "@nestjs/platform-express";
 import { bearer } from "better-auth/plugins/bearer";
-import { AuthGuard, AuthModule } from "../../src/index.ts";
+import { AuthModule } from "../../src/index.ts";
 import { betterAuth } from "better-auth";
-import { APP_GUARD } from "@nestjs/core";
 import { TestController } from "./test-controller.ts";
 import { TestResolver } from "./test-resolver.ts";
 
@@ -39,13 +38,7 @@ export function createTestAppModule(auth: ReturnType<typeof createTestAuth>) {
 			}),
 		],
 		controllers: [TestController],
-		providers: [
-			{
-				provide: APP_GUARD,
-				useClass: AuthGuard,
-			},
-			TestResolver,
-		],
+		providers: [TestResolver],
 	})
 	class AppModule {}
 

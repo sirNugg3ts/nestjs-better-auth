@@ -1,5 +1,7 @@
 import { Resolver, Query, ObjectType, Field } from "@nestjs/graphql";
-import { Optional, Public, Session } from "../../src/decorators.ts";
+import { AllowAnonymous } from "../../src/decorators.ts";
+import { OptionalAuth } from "../../src/decorators.ts";
+import { Session } from "../../src/decorators.ts";
 import type { UserSession } from "../../src/auth-guard.ts";
 
 @ObjectType()
@@ -19,13 +21,13 @@ class OptionalAuthenticatedResult {
 
 @Resolver()
 export class TestResolver {
-	@Public()
+	@AllowAnonymous()
 	@Query(() => String)
 	publicHello(): string {
 		return "ok";
 	}
 
-	@Optional()
+	@OptionalAuth()
 	@Query(() => OptionalAuthenticatedResult)
 	optionalAuthenticated(@Session() session: UserSession) {
 		return {

@@ -24,6 +24,8 @@ import {
 import { AuthService } from "./auth-service.ts";
 import { SkipBodyParsingMiddleware } from "./middlewares.ts";
 import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
+import { AuthGuard } from "./auth-guard.ts";
+import { APP_GUARD } from "@nestjs/core";
 
 const HOOKS = [
 	{ metadataKey: BEFORE_HOOK_KEY, hookType: "before" as const },
@@ -160,8 +162,20 @@ export class AuthModule
 	}
 
 	static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
+		const forRootAsyncResult = super.forRootAsync(options);
 		return {
 			...super.forRootAsync(options),
+			providers: [
+				...(forRootAsyncResult.providers ?? []),
+				...(!options.disableGlobalAuthGuard
+					? [
+							{
+								provide: APP_GUARD,
+								useClass: AuthGuard,
+							},
+						]
+					: []),
+			],
 		};
 	}
 
@@ -182,8 +196,21 @@ export class AuthModule
 				? (arg1 as typeof OPTIONS_TYPE)
 				: ({ ...(arg2 ?? {}), auth: arg1 as Auth } as typeof OPTIONS_TYPE);
 
+		const forRootResult = super.forRoot(normalizedOptions);
+
 		return {
-			...super.forRoot(normalizedOptions),
+			...forRootResult,
+			providers: [
+				...(forRootResult.providers ?? []),
+				...(!normalizedOptions.disableGlobalAuthGuard
+					? [
+							{
+								provide: APP_GUARD,
+								useClass: AuthGuard,
+							},
+						]
+					: []),
+			],
 		};
 	}
 }
