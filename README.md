@@ -6,9 +6,6 @@ A comprehensive NestJS integration library for [Better Auth](https://www.better-
 
 Install the library in your NestJS project:
 
-> [!WARNING]  
-> Install the latest `better-auth` package. If you hit 404s after updates, remove `node_modules` and your lockfile, then reinstall. Context: [#20](https://github.com/ThallesP/nestjs-better-auth/issues/20).
-
 ```bash
 # Using npm
 npm install @thallesp/nestjs-better-auth
@@ -70,79 +67,9 @@ export class AppModule {}
 
 ## Route Protection
 
-Better Auth provides an `AuthGuard` to protect your routes. You can choose one of two approaches to implement route protection:
+**Global by default**: An `AuthGuard` is registered globally by this module. All routes are protected unless you explicitly allow access with `@AllowAnonymous()` or mark them as optional with `@OptionalAuth()`.
 
-**Option 1: Controller or Route Level Protection**
-
-Apply the guard to specific controllers or routes:
-
-```ts title="app.controller.ts"
-import { Controller, Get, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@thallesp/nestjs-better-auth";
-
-@Controller("users")
-@UseGuards(AuthGuard) // Apply to all routes in this controller
-export class UserController {
-  @Get("me")
-  async getProfile() {
-    return { message: "Protected route" };
-  }
-}
-```
-
-**Option 2: Global Protection**
-
-Alternatively, you can register the guard globally using `APP_GUARD` to protect all routes by default:
-
-```ts title="app.module.ts"
-import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { AuthModule, AuthGuard } from "@thallesp/nestjs-better-auth";
-import { auth } from "./auth";
-
-@Module({
-  imports: [AuthModule.forRoot({ auth })],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
-})
-export class AppModule {}
-```
-
-> [!NOTE]  
-> Choose either the controller/route level approach or the global approach based on your needs. You don't need to implement both.
-
-### GraphQL Support
-
-The `AuthGuard` works seamlessly with GraphQL resolvers using the same patterns:
-
-```ts title="user.resolver.ts"
-import { Resolver, Query, UseGuards } from "@nestjs/graphql";
-import {
-  AuthGuard,
-  Session,
-  UserSession,
-  AllowAnonymous,
-} from "@thallesp/nestjs-better-auth";
-
-@Resolver()
-@UseGuards(AuthGuard) // Apply to all resolvers in this class
-export class UserResolver {
-  @Query(() => String)
-  @AllowAnonymous() // Allow anonymous access (no authentication required)
-  async publicQuery() {
-    return "This query is public";
-  }
-
-  @Query(() => String)
-  async protectedQuery(@Session() session: UserSession) {
-    return `Hello ${session.user.name}!`;
-  }
-}
-```
+GraphQL is supported and works the same way as REST: the global guard applies to resolvers too, and you can use `@AllowAnonymous()`/`@OptionalAuth()` on queries and mutations.
 
 ## Decorators
 
@@ -168,9 +95,6 @@ export class UserController {
 ### AllowAnonymous and OptionalAuth Decorators
 
 Control authentication requirements for specific routes:
-
-> [!NOTE]  
-> `Public` and `Optional` are deprecated aliases. Use `AllowAnonymous` and `OptionalAuth` instead. The deprecated names remain available for now for backward compatibility.
 
 ```ts title="app.controller.ts"
 import { Controller, Get } from "@nestjs/common";
@@ -259,21 +183,13 @@ export class AppModule {}
 The `AuthService` is automatically provided by the `AuthModule` and can be injected into your controllers to access the Better Auth instance and its API endpoints.
 
 ```ts title="users.controller.ts"
-import {
-  Controller,
-  Get,
-  Post,
-  Request,
-  Body,
-  UseGuards,
-} from "@nestjs/common";
-import { AuthGuard, AuthService } from "@thallesp/nestjs-better-auth";
+import { Controller, Get, Post, Request, Body } from "@nestjs/common";
+import { AuthService } from "@thallesp/nestjs-better-auth";
 import { fromNodeHeaders } from "better-auth/node";
 import type { Request as ExpressRequest } from "express";
 import { auth } from "../auth";
 
 @Controller("users")
-@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private authService: AuthService<typeof auth>) {}
 
@@ -326,12 +242,47 @@ The request object provides:
 - `req.session`: The full session object containing user data and authentication state
 - `req.user`: A direct reference to the user object from the session (useful for observability tools like Sentry)
 
+### Advanced: Disable the global AuthGuard
+
+If you prefer to manage guards yourself, you can disable the global guard and then apply `@UseGuards(AuthGuard)` per controller/route or register it via `APP_GUARD`.
+
+```ts title="app.module.ts"
+import { Module } from "@nestjs/common";
+import { AuthModule } from "@thallesp/nestjs-better-auth";
+import { auth } from "./auth";
+
+@Module({
+  imports: [
+    AuthModule.forRoot({
+      auth,
+      disableGlobalAuthGuard: true,
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+```ts title="app.controller.ts"
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@thallesp/nestjs-better-auth";
+
+@Controller("users")
+@UseGuards(AuthGuard)
+export class UserController {
+  @Get("me")
+  async getProfile() {
+    return { message: "Protected route" };
+  }
+}
+```
+
 ## Module Options
 
 When configuring `AuthModule.forRoot()`, you can provide options to customize the behavior:
 
 ```typescript
-AuthModule.forRoot(auth, {
+AuthModule.forRoot({
+  auth,
   disableTrustedOriginsCors: false,
   disableBodyParser: false,
 });
@@ -343,3 +294,4 @@ The available options are:
 | --------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `disableTrustedOriginsCors` | `false` | When set to `true`, disables the automatic CORS configuration for the origins specified in `trustedOrigins`. Use this if you want to handle CORS configuration manually. |
 | `disableBodyParser`         | `false` | When set to `true`, disables the automatic body parser middleware. Use this if you want to handle request body parsing manually.                                         |
+| `disableGlobalAuthGuard`    | `false` | When set to `true`, does not register `AuthGuard` as a global guard. Use this if you prefer to apply `AuthGuard` manually or register it yourself via `APP_GUARD`.       |
