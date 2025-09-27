@@ -25,6 +25,9 @@ jobs:
       - name: Check for formatting errors
         run: bun run format
 
+      - name: Run tests
+        run: bun run test
+
       - name: Release to NPM
         run: bun publish --access public
         env:
