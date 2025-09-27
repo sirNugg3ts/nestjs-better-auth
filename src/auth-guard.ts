@@ -19,7 +19,7 @@ export type UserSession = NonNullable<
 
 /**
  * NestJS guard that handles authentication for protected routes
- * Can be configured with @Public() or @Optional() decorators to modify authentication behavior
+ * Can be configured with @AllowAnonymous() or @OptionalAuth() decorators to modify authentication behavior
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
