@@ -19,6 +19,14 @@ export function createTestAuth() {
 			enabled: true,
 		},
 		plugins: [bearer()],
+        user: {
+            additionalFields: {
+                role: {
+                    type: "string",
+                    defaultValue: 'user'
+                }
+            }
+        }
 	});
 }
 

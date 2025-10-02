@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import {ForbiddenException, Inject, Injectable, UnauthorizedException} from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import type { getSession } from "better-auth/api";
@@ -89,9 +89,9 @@ export class AuthGuard implements CanActivate {
             }
 
             if (!hasRole) {
-                throw new APIError(403, {
+                throw new ForbiddenException({
                     code: "FORBIDDEN",
-                    message: "Forbidden: insufficient permissions",
+                    message: "Insufficient permissions",
                 });
             }
         }
