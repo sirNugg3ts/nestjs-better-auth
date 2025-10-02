@@ -5,6 +5,7 @@ export type AuthModuleOptions<A = Auth> = {
 	auth: A;
 	disableTrustedOriginsCors?: boolean;
 	disableBodyParser?: boolean;
+	disableGlobalAuthGuard?: boolean;
 };
 
 export const MODULE_OPTIONS_TOKEN = Symbol("AUTH_MODULE_OPTIONS");
@@ -19,14 +20,12 @@ export const { ConfigurableModuleClass, OPTIONS_TYPE, ASYNC_OPTIONS_TYPE } =
 				isGlobal: true,
 				disableTrustedOriginsCors: false,
 				disableBodyParser: false,
+				disableGlobalAuthGuard: false,
 			},
 			(def, extras) => {
-				const providers = def.providers ?? [];
-
 				return {
 					...def,
 					exports: [MODULE_OPTIONS_TOKEN],
-					providers,
 					global: extras.isGlobal,
 				};
 			},

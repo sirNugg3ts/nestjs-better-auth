@@ -4,7 +4,7 @@ import { Reflector } from "@nestjs/core";
 import type { getSession } from "better-auth/api";
 import { fromNodeHeaders } from "better-auth/node";
 import {
-	type AuthModuleOptions,
+	AuthModuleOptions,
 	MODULE_OPTIONS_TOKEN,
 } from "./auth-module-definition.ts";
 import { getRequestFromContext } from "./utils.ts";
@@ -25,7 +25,7 @@ export type UserSession = BaseUserSession & {
 
 /**
  * NestJS guard that handles authentication for protected routes
- * Can be configured with @Public() or @Optional() decorators to modify authentication behavior
+ * Can be configured with @AllowAnonymous() or @OptionalAuth() decorators to modify authentication behavior
  */
 @Injectable()
 export class AuthGuard implements CanActivate {

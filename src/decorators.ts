@@ -5,18 +5,18 @@ import { AFTER_HOOK_KEY, BEFORE_HOOK_KEY, HOOK_KEY } from "./symbols.ts";
 import { getRequestFromContext } from "./utils.ts";
 
 /**
- * Marks a route or a controller as public, allowing unauthenticated access.
- * When applied, the AuthGuard will skip authentication checks.
+ * Allows unauthenticated (anonymous) access to a route or controller.
+ * When applied, the AuthGuard will not perform authentication checks.
  */
-export const Public = (): CustomDecorator<string> =>
+export const AllowAnonymous = (): CustomDecorator<string> =>
 	SetMetadata("PUBLIC", true);
 
 /**
- * Marks a route or a controller as having optional authentication.
- * When applied, the AuthGuard will allow the request to proceed
+ * Marks a route or controller as having optional authentication.
+ * When applied, the AuthGuard allows the request to proceed
  * even if no session is present.
  */
-export const Optional = (): CustomDecorator<string> =>
+export const OptionalAuth = (): CustomDecorator<string> =>
 	SetMetadata("OPTIONAL", true);
 
 /**
@@ -27,6 +27,16 @@ export const Optional = (): CustomDecorator<string> =>
  */
 export const Roles = (roles: string[]): CustomDecorator =>
     SetMetadata("ROLES", roles);
+  
+/**
+ * @deprecated Use AllowAnonymous() instead.
+ */
+export const Public = AllowAnonymous;
+
+/**
+ * @deprecated Use OptionalAuth() instead.
+ */
+export const Optional = OptionalAuth;
 
 /**
  * Parameter decorator that extracts the user session from the request.
