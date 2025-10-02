@@ -17,7 +17,8 @@
 		"prepack": "unbuild",
 		"lint": "biome lint",
 		"format": "biome format",
-		"check": "biome check"
+		"check": "biome check",
+        "test": "jest"
 	},
 	"types": "dist/index.d.ts",
 	"main": "./dist/index.cjs",
@@ -32,9 +33,16 @@
 	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.0",
+		"@nestjs/platform-express": "^11.1.6",
+		"@nestjs/testing": "^11.1.6",
 		"@tsconfig/node22": "^22.0.2",
 		"@types/bun": "latest",
 		"@types/express": "^5.0.0",
+		"@types/jest": "^30.0.0",
+		"@types/supertest": "^6.0.3",
+		"jest": "^30.2.0",
+		"supertest": "^7.1.4",
+		"ts-jest": "^29.4.4",
 		"unbuild": "^3.6.1"
 	},
 	"peerDependencies": {
