@@ -65,10 +65,6 @@ export class AuthModule
 	onModuleInit(): void {
 		if (!this.options.auth.options.hooks) return;
 
-		this.options.auth.options.hooks = {
-			...this.options.auth.options.hooks,
-		};
-
 		const providers = this.discoveryService
 			.getProviders()
 			.filter(
