@@ -117,3 +117,32 @@ describe("hooks e2e", () => {
 		expect(tracker.afterCalls).toBe(before + 1);
 	});
 });
+
+describe("hooks configuration validation", () => {
+	it("should throw if hook providers exist without hooks configured", async () => {
+		const auth = betterAuth({
+			basePath: "/api/auth",
+			emailAndPassword: { enabled: true },
+			plugins: [bearer()],
+			// intentionally DO NOT set hooks: {}
+		});
+
+		@Module({
+			imports: [AuthModule.forRoot({ auth })],
+			providers: [HookTrackerService, SignUpBeforeHook],
+		})
+		class AppModule {}
+
+		const moduleRef = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		const app = moduleRef.createNestApplication(new ExpressAdapter(), {
+			bodyParser: false,
+		});
+
+		await expect(app.init()).rejects.toThrow(
+			/@Hook providers.*hooks.*not configured/i,
+		);
+	});
+});
