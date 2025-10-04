@@ -63,17 +63,22 @@ export class AuthModule
 	}
 
 	onModuleInit(): void {
-		if (!this.options.auth.options.hooks) return;
-
-		this.options.auth.options.hooks = {
-			...this.options.auth.options.hooks,
-		};
-
 		const providers = this.discoveryService
 			.getProviders()
 			.filter(
 				({ metatype }) => metatype && Reflect.getMetadata(HOOK_KEY, metatype),
 			);
+
+		const hasHookProviders = providers.length > 0;
+		const hooksConfigured =
+			typeof this.options.auth?.options?.hooks === "object";
+
+		if (hasHookProviders && !hooksConfigured)
+			throw new Error(
+				"Detected @Hook providers but Better Auth 'hooks' are not configured. Add 'hooks: {}' to your betterAuth(...) options.",
+			);
+
+		if (!hooksConfigured) return;
 
 		for (const provider of providers) {
 			const providerPrototype = Object.getPrototypeOf(provider.instance);

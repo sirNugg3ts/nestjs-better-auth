@@ -156,6 +156,21 @@ export class AdminController { /* */ }
 
 ### Hook Decorators
 
+> [!IMPORTANT]
+> To use `@Hook`, `@BeforeHook`, `@AfterHook`, set `hooks: {}` (empty object) in your `betterAuth(...)` config. You can still add your own Better Auth hooks; `hooks: {}` (empty object) is just the minimum required.
+
+Minimal Better Auth setup with hooks enabled:
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+  basePath: "/api/auth",
+  // other better-auth options...
+  hooks: {},
+});
+```
+
 Create custom hooks that integrate with NestJS's dependency injection:
 
 ```ts title="hooks/sign-up.hook.ts"
