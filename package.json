@@ -1,6 +1,6 @@
 {
 	"name": "@thallesp/nestjs-better-auth",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Better Auth for NestJS",
 	"author": "Thalles Passos",
 	"license": "MIT",
@@ -33,7 +33,7 @@
 	],
 	"devDependencies": {
 		"@apollo/server": "^4.12.2",
-		"@biomejs/biome": "^2.2.4",
+		"@biomejs/biome": "2.2.4",
 		"@faker-js/faker": "^10.0.0",
 		"@nestjs/apollo": "^13.1.0",
 		"@nestjs/graphql": "^13.1.0",
