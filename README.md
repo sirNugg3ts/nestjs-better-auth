@@ -141,7 +141,7 @@ export class OptionalController {
 ### Hook Decorators
 
 > [!IMPORTANT]
-> To use `@Hook`, `@BeforeHook`, `@AfterHook`, set `hooks: {}` in your `betterAuth(...)` config. You can still add your own Better Auth hooks; `hooks: {}` is just the minimum required.
+> To use `@Hook`, `@BeforeHook`, `@AfterHook`, set `hooks: {}` (empty object) in your `betterAuth(...)` config. You can still add your own Better Auth hooks; `hooks: {}` (empty object) is just the minimum required.
 
 Minimal Better Auth setup with hooks enabled:
 
