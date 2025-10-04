@@ -1,6 +1,6 @@
 import request from "supertest";
-import { faker } from "@faker-js/faker";
-import { createTestApp, type TestAppSetup } from "../shared/test-utils.ts";
+import {faker} from "@faker-js/faker";
+import {createTestApp, type TestAppSetup} from "../shared/test-utils.ts";
 
 describe("rest auth e2e", () => {
 	let testSetup: TestAppSetup;
@@ -122,45 +122,61 @@ describe("rest auth e2e", () => {
     });
 
     it("should allow access to admin-protected route with admin role", async () => {
-        const adminUser = await testSetup.auth.api.signUpEmail({
+        const password = faker.internet.password({ length: 10 })
+        const adminUser = await testSetup.auth.api.createUser({
             body: {
                 name: "Admin",
                 email: faker.internet.email(),
-                password: faker.internet.password({ length: 10 }),
+                password: password,
                 role: "admin",
             },
         });
 
+        const { token, user } = await testSetup.auth.api.signInEmail({
+            body: {
+                email: adminUser.user.email,
+                password: password,
+            },
+        })
+
         const response = await request(testSetup.app.getHttpServer())
             .get("/test/admin-protected")
-            .set("Authorization", `Bearer ${adminUser.token}`)
+            .set("Authorization", `Bearer ${token}`)
             .expect(200);
 
         expect(response.body).toMatchObject({
             user: expect.objectContaining({
-                id: adminUser.user.id,
+                id: user.id,
             }),
         });
     });
 
     it("should allow access to admin-moderator-protected route with moderator role", async () => {
-        const moderatorUser = await testSetup.auth.api.signUpEmail({
+        const password = faker.internet.password({ length: 10 })
+        const moderatorUser = await testSetup.auth.api.createUser({
             body: {
-                name: "Moderator",
+                name: "Admin",
                 email: faker.internet.email(),
-                password: faker.internet.password({ length: 10 }),
+                password: password,
                 role: "moderator",
             },
         });
 
+        const { token, user } = await testSetup.auth.api.signInEmail({
+            body: {
+                email: moderatorUser.user.email,
+                password: password,
+            },
+        })
+
         const response = await request(testSetup.app.getHttpServer())
             .get("/test/admin-moderator-protected")
-            .set("Authorization", `Bearer ${moderatorUser.token}`)
+            .set("Authorization", `Bearer ${token}`)
             .expect(200);
 
         expect(response.body).toMatchObject({
             user: expect.objectContaining({
-                id: moderatorUser.user.id,
+                id: user.id,
             }),
         });
     });
