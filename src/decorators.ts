@@ -26,8 +26,8 @@ export const OptionalAuth = (): CustomDecorator<string> =>
  * @param roles - The roles required for access
  */
 export const Roles = (roles: string[]): CustomDecorator =>
-    SetMetadata("ROLES", roles);
-  
+	SetMetadata("ROLES", roles);
+
 /**
  * @deprecated Use AllowAnonymous() instead.
  */

@@ -35,17 +35,17 @@ export class TestResolver {
 		};
 	}
 
-    @Roles(['admin'])
-    @Query(() => String)
-    adminProtected(): string {
-        return "admin ok";
-    }
+	@Roles(["admin"])
+	@Query(() => String)
+	adminProtected(): string {
+		return "admin ok";
+	}
 
-    @Roles(['admin', 'moderator'])
-    @Query(() => String)
-    adminModeratorProtected(): string {
-        return "admin or moderator ok";
-    }
+	@Roles(["admin", "moderator"])
+	@Query(() => String)
+	adminModeratorProtected(): string {
+		return "admin or moderator ok";
+	}
 
 	@Query(() => ProtectedUserIdResult)
 	protectedUserId(@Session() session: UserSession) {

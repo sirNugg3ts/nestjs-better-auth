@@ -21,15 +21,15 @@ export function createTestAuth() {
 			enabled: true,
 		},
 		plugins: [
-            bearer(),
-            admin({
-                roles: {
-                    admin: adminAc,
-                    moderator: userAc, // moderator has same permissions as user but is a different custom role
-                    user: userAc,
-                }
-            })
-        ],
+			bearer(),
+			admin({
+				roles: {
+					admin: adminAc,
+					moderator: userAc, // moderator has same permissions as user but is a different custom role
+					user: userAc,
+				},
+			}),
+		],
 	});
 }
 

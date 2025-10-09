@@ -22,15 +22,15 @@ export class TestController {
 		return { authenticated: !!req.user, session: req.session };
 	}
 
-    @Roles(['admin'])
-    @Get("admin-protected")
-    adminProtected(@Request() req: UserSession) {
-        return { user: req.user };
-    }
+	@Roles(["admin"])
+	@Get("admin-protected")
+	adminProtected(@Request() req: UserSession) {
+		return { user: req.user };
+	}
 
-    @Roles(['admin', 'moderator'])
-    @Get("admin-moderator-protected")
-    adminModeratorProtected(@Request() req: UserSession) {
-        return { user: req.user };
-    }
+	@Roles(["admin", "moderator"])
+	@Get("admin-moderator-protected")
+	adminModeratorProtected(@Request() req: UserSession) {
+		return { user: req.user };
+	}
 }

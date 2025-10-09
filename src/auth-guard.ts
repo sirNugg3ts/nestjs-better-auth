@@ -1,4 +1,9 @@
-import {ForbiddenException, Inject, Injectable, UnauthorizedException} from "@nestjs/common";
+import {
+	ForbiddenException,
+	Inject,
+	Injectable,
+	UnauthorizedException,
+} from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import type { getSession } from "better-auth/api";
@@ -14,13 +19,13 @@ import { getRequestFromContext } from "./utils.ts";
  * Excludes null and undefined values from the session return type
  */
 export type BaseUserSession = NonNullable<
-    Awaited<ReturnType<ReturnType<typeof getSession>>>
+	Awaited<ReturnType<ReturnType<typeof getSession>>>
 >;
 
 export type UserSession = BaseUserSession & {
-    user: BaseUserSession["user"] & {
-        role?: string | string[];
-    };
+	user: BaseUserSession["user"] & {
+		role?: string | string[];
+	};
 };
 
 /**
@@ -74,27 +79,27 @@ export class AuthGuard implements CanActivate {
 				message: "Unauthorized",
 			});
 
-        const requiredRoles = this.reflector.getAllAndOverride<string[]>("ROLES", [
-            context.getHandler(),
-            context.getClass(),
-        ]);
+		const requiredRoles = this.reflector.getAllAndOverride<string[]>("ROLES", [
+			context.getHandler(),
+			context.getClass(),
+		]);
 
-        if (requiredRoles && requiredRoles.length > 0) {
-            const userRole = session.user.role;
-            let hasRole = false;
-            if (Array.isArray(userRole)) {
-                hasRole = userRole.some(role => requiredRoles.includes(role));
-            } else if (typeof userRole === 'string') {
-                hasRole = requiredRoles.includes(userRole);
-            }
+		if (requiredRoles && requiredRoles.length > 0) {
+			const userRole = session.user.role;
+			let hasRole = false;
+			if (Array.isArray(userRole)) {
+				hasRole = userRole.some((role) => requiredRoles.includes(role));
+			} else if (typeof userRole === "string") {
+				hasRole = requiredRoles.includes(userRole);
+			}
 
-            if (!hasRole) {
-                throw new ForbiddenException({
-                    code: "FORBIDDEN",
-                    message: "Insufficient permissions",
-                });
-            }
-        }
+			if (!hasRole) {
+				throw new ForbiddenException({
+					code: "FORBIDDEN",
+					message: "Insufficient permissions",
+				});
+			}
+		}
 
 		return true;
 	}
