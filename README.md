@@ -95,13 +95,17 @@ export class UserController {
 }
 ```
 
-### AllowAnonymous and OptionalAuth Decorators
+### AllowAnonymous, OptionalAuth, and Roles Decorators
 
-Control authentication requirements for specific routes:
+Control authentication/authorization requirements for specific routes:
 
 ```ts title="app.controller.ts"
 import { Controller, Get } from "@nestjs/common";
-import { AllowAnonymous, OptionalAuth } from "@thallesp/nestjs-better-auth";
+import {
+  AllowAnonymous,
+  OptionalAuth,
+  Roles,
+} from "@thallesp/nestjs-better-auth";
 
 @Controller("users")
 export class UserController {
@@ -117,16 +121,10 @@ export class UserController {
     return { authenticated: !!session, session };
   }
 
-  @Get('admin')
-  @Roles(['admin']) // Only authenticated users with the 'admin' role can access this route
+  @Get("admin")
+  @Roles(["admin"]) // Only authenticated users with the 'admin' role can access this route. Uses the access control plugin from better-auth.
   adminRoute() {
-    return 'Only admins can see this';
-  }
-
-  @Get('admin-moderator')
-  @Roles(['admin', 'moderator']) // Only authenticated users with 'admin' or 'moderator' roles can access this route
-  moderatorRoute() {
-    return 'Only admins and moderators can see this';
+    return "Only admins can see this";
   }
 }
 ```
@@ -149,9 +147,11 @@ export class OptionalController {
   /* */
 }
 
-@Roles(['admin']) // All routes inside this controller require 'admin' role
-@Controller('admin')
-export class AdminController { /* */ }
+@Roles(["admin"]) // All routes inside this controller require 'admin' role. Uses the access control plugin from better-auth.
+@Controller("admin")
+export class AdminController {
+  /* */
+}
 ```
 
 ### Hook Decorators
@@ -167,7 +167,7 @@ import { betterAuth } from "better-auth";
 export const auth = betterAuth({
   basePath: "/api/auth",
   // other better-auth options...
-  hooks: {},
+  hooks: {}, // minimum required to use hooks. read above for more details.
 });
 ```
 
